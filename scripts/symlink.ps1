@@ -26,7 +26,8 @@ function Create-SymlinkSafely {
     )
     
     if (-not (Test-Path $Source)) {
-        Write-Host "⚠ Source not found: $Source" -ForegroundColor Yellow
+        # Remplacement de ⚠ par [!]
+        Write-Host "[!] Source not found: $Source" -ForegroundColor Yellow
         return $false
     }
     
@@ -54,17 +55,20 @@ function Create-SymlinkSafely {
     # Create symlink
     try {
         New-Item -ItemType SymbolicLink -Path $Target -Value $Source -Force | Out-Null
-        Write-Host "✓ Linked: $Target" -ForegroundColor Green
+        # Remplacement de ✓ par [OK]
+        Write-Host "[OK] Linked: $Target" -ForegroundColor Green
         return $true
     }
     catch {
         if ($_.Exception.Message -match "require administrator") {
-            Write-Host "✗ Failed to create symlink (requires admin): $Target" -ForegroundColor Red
+            # Remplacement de ✗ par [Error]
+            Write-Host "[Error] Failed to create symlink (requires admin): $Target" -ForegroundColor Red
             Write-Host "  Run this script as Administrator to create symlinks." -ForegroundColor Red
             return $false
         }
         else {
-            Write-Host "✗ Failed to create symlink: $_" -ForegroundColor Red
+            # Remplacement de ✗ par [Error]
+            Write-Host "[Error] Failed to create symlink: $_" -ForegroundColor Red
             return $false
         }
     }
@@ -92,7 +96,8 @@ if (-not (Test-Path $nvimDir)) {
 Create-SymlinkSafely "$DOTFILES\nvim\init.vim" "$nvimDir\init.vim"
 
 Write-Host ""
-Write-Host "✓ Dotfiles installation complete." -ForegroundColor Green
+# Remplacement de ✓ par [OK]
+Write-Host "[OK] Dotfiles installation complete." -ForegroundColor Green
 Write-Host ""
 
 if (-not $isAdmin) {

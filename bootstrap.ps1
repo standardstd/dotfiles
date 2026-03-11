@@ -34,10 +34,10 @@ try {
     & powershell -ExecutionPolicy Bypass -File "$DOTFILES\scripts\install-vscode-extensions.ps1"
     Write-Host ""
     
-    Write-Host "✓ Setup complete!" -ForegroundColor Green
+    Write-Host "[OK] Setup complete!" -ForegroundColor Green
 }
 catch {
-    Write-Host "✗ Error during setup:" -ForegroundColor Red
+    Write-Host "[!] Error during setup:" -ForegroundColor Red
     Write-Host $_.Exception.Message -ForegroundColor Red
     exit 1
 }

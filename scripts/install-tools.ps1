@@ -36,15 +36,18 @@ foreach ($tool in $tools) {
             --accept-source-agreements `
             --accept-package-agreements 2>&1
         
-        Write-Host "✓ Installed $($tool.name)" -ForegroundColor Green
+        # Remplacement du symbole ✓ par [OK]
+        Write-Host "[OK] Installed $($tool.name)" -ForegroundColor Green
     }
     catch {
-        Write-Host "⚠ Failed to install $($tool.name): $_" -ForegroundColor Red
+        # Remplacement du symbole ⚠ par [!]
+        Write-Host "[!] Failed to install $($tool.name): $_" -ForegroundColor Red
     }
 }
 
 Write-Host ""
-Write-Host "✓ Tools installation complete" -ForegroundColor Green
+# Remplacement du symbole ✓ par [OK]
+Write-Host "[OK] Tools installation complete" -ForegroundColor Green
 Write-Host ""
 Write-Host "Note: Add Git and Neovim to PATH if needed:" -ForegroundColor Cyan
 Write-Host "  - Git Bash is typically at: C:\Program Files\Git\bin\bash.exe" -ForegroundColor Cyan

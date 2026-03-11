@@ -45,15 +45,18 @@ foreach ($extension in $extensions) {
     
     try {
         $output = code --install-extension $extension --force 2>&1
-        Write-Host "✓ Installed $extension" -ForegroundColor Green
+        # Remplacement du symbole ✓ par [OK]
+        Write-Host "[OK] Installed $extension" -ForegroundColor Green
         $successCount++
     }
     catch {
-        Write-Host "⚠ Failed to install $extension" -ForegroundColor Red
+        # Remplacement du symbole ⚠ par [!]
+        Write-Host "[!] Failed to install $extension" -ForegroundColor Red
         $failedCount++
     }
 }
 
 Write-Host ""
-Write-Host "✓ Extensions installation complete." -ForegroundColor Green
+# Remplacement du symbole ✓ par [OK]
+Write-Host "[OK] Extensions installation complete." -ForegroundColor Green
 Write-Host "  Installed: $successCount | Failed: $failedCount" -ForegroundColor Cyan
