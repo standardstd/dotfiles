@@ -4,35 +4,23 @@
     "192.168.2.35": "linux",
     "192.168.2.44": "linux",
     "192.168.2.24": "linux",
-    "192.168.23.128": "linux"
+    "192.168.23.128": "linux",
   },
   "files.autoSave": "afterDelay",
   "workbench.colorTheme": "Visual Studio Dark",
   "liveServer.settings.donotVerifyTags": true,
-
-  "[html]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "[javascript]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "[vue]": {
-    "editor.defaultFormatter": "Vue.volar"
-  },
-  "[fsharp]": {
-    "editor.defaultFormatter": "Ionide.Ionide-fsharp"
-  },
-  "[cpp]": {
-    "editor.defaultFormatter": "ms-vscode.cpptools"
-  },
-
+  "[html]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "[javascript]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "[vue]": { "editor.defaultFormatter": "Vue.volar" },
+  "[fsharp]": { "editor.defaultFormatter": "Ionide.Ionide-fsharp" },
+  "[cpp]": { "editor.defaultFormatter": "ms-vscode.cpptools" },
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.formatOnSave": true,
   "editor.formatOnPaste": true,
   "editor.rulers": [80],
   "editor.renderWhitespace": "all",
   "editor.inlineSuggest.enabled": true,
-
+  "editor.lineNumbers": "relative",
   "redhat.telemetry.enabled": true,
   "settingsSync.ignoredExtensions": [],
   "git.autofetch": true,
@@ -42,86 +30,104 @@
     "*": true,
     "plaintext": false,
     "markdown": false,
-    "scminput": false
+    "scminput": false,
   },
   "diffEditor.ignoreTrimWhitespace": false,
   "chat.viewSessions.orientation": "stacked",
 
   "vim.leader": " ",
   "vim.useSystemClipboard": true,
-  "vim.handleKeys": {
-    "<space>": true
-  },
   "vim.hlsearch": true,
   "vim.incsearch": true,
   "vim.surround": true,
   "vim.highlightedyank": true,
-  "editor.lineNumbers": "relative",
   "vim.easymotion": true,
-  "vim.insertModeKeyBindings": [
-    {
-      "before": ["j", "j"],
-      "after": ["<Esc>"]
-    }
-  ],
+  "vim.handleKeys": {
+    "<space>": true,
+    "<C-d>": true,
+    "<C-a>": false,
+    "<C-f>": false,
+    "<A-j>": true,
+    "<A-k>": true,
+    "[": true,
+    "]": true,
+  },
+  "vim.insertModeKeyBindings": [{ "before": ["j", "j"], "after": ["<Esc>"] }],
   "vim.normalModeKeyBindingsNonRecursive": [
+    // Navigation méthodes avec Space+n/N
+    { "before": ["<leader>", "n"], "after": ["}"] },
+    { "before": ["<leader>", "N"], "after": ["{"] },
+
+    // Navigation méthodes avec Alt+j / Alt+k
+    { "before": ["<A-j>"], "after": ["}"] },
+    { "before": ["<A-k>"], "after": ["{"] },
+
+    // Navigation méthodes avec [m / ]m
+    { "before": ["]", "m"], "commands": ["editor.action.goToNextSymbol"] },
+    { "before": ["[", "m"], "commands": ["editor.action.goToPreviousSymbol"] },
+
+    // Navigation classes [c / ]c
+    { "before": ["]", "c"], "commands": ["editor.action.goToNextSymbol"] },
+    { "before": ["[", "c"], "commands": ["editor.action.goToPreviousSymbol"] },
+
+    // Navigation erreurs [e / ]e
+    { "before": ["]", "e"], "commands": ["editor.action.marker.next"] },
+    { "before": ["[", "e"], "commands": ["editor.action.marker.prev"] },
+
+    // Autres bindings leader
     {
       "before": ["<leader>", "f"],
       "commands": [
         "editor.action.formatDocument",
-        "editor.action.organizeImports"
-      ]
+        "editor.action.organizeImports",
+      ],
     },
     {
       "before": ["<leader>", "s"],
-      "commands": ["workbench.action.findInFiles"]
+      "commands": ["workbench.action.findInFiles"],
     },
     { "before": ["<leader>", "t"], "commands": ["workbench.action.quickOpen"] },
     {
       "before": ["<leader>", "o"],
-      "commands": ["workbench.action.gotoSymbol"]
+      "commands": ["workbench.action.gotoSymbol"],
     },
     { "before": ["<leader>", "r", "n"], "commands": ["editor.action.rename"] },
     { "before": ["<leader>", "a"], "commands": ["editor.action.quickFix"] },
     {
       "before": ["<leader>", "q"],
-      "commands": ["workbench.action.closeActiveEditor"]
+      "commands": ["workbench.action.closeActiveEditor"],
     },
     {
       "before": ["<leader>", "r"],
-      "commands": ["workbench.action.openRecent"]
+      "commands": ["workbench.action.openRecent"],
     },
     {
       "before": ["<leader>", "e"],
-      "commands": ["workbench.action.reopenClosedEditor"]
+      "commands": ["workbench.action.reopenClosedEditor"],
     },
     {
-      "before": ["<leader>", "tt"],
-      "commands": ["workbench.action.terminal.toggleTerminal"]
+      "before": ["<leader>", "t", "t"],
+      "commands": ["workbench.action.terminal.toggleTerminal"],
     },
     {
       "before": ["<leader>", "v"],
-      "commands": ["workbench.action.splitEditorRight"]
+      "commands": ["workbench.action.splitEditorRight"],
     },
     {
       "before": ["<leader>", "h"],
-      "commands": ["workbench.action.splitEditorDown"]
+      "commands": ["workbench.action.splitEditorDown"],
+    },
+    {
+      "before": ["<leader>", "m"],
+      "commands": ["workbench.action.gotoSymbol"],
     },
     { "before": ["g", "d"], "commands": ["editor.action.revealDefinition"] },
     { "before": ["g", "r"], "commands": ["editor.action.goToReferences"] },
     { "before": ["g", "i"], "commands": ["editor.action.goToImplementation"] },
     { "before": ["g", "y"], "commands": ["editor.action.goToTypeDefinition"] },
     { "before": ["g", "b"], "commands": ["workbench.action.navigateBack"] },
-    {
-      "before": ["<leader>", "m"],
-      "commands": ["workbench.action.gotoSymbol"]
-    },
-    { "before": ["]", "m"], "commands": ["editor.action.goToNextSymbol"] },
-    { "before": ["[", "m"], "commands": ["editor.action.goToPreviousSymbol"] },
-    { "before": ["]", "e"], "commands": ["editor.action.marker.next"] },
-    { "before": ["[", "e"], "commands": ["editor.action.marker.prev"] }
   ],
   "vim.visualModeKeyBindingsNonRecursive": [
-    { "before": ["f"], "commands": ["editor.action.formatSelection"] }
-  ]
+    { "before": ["f"], "commands": ["editor.action.formatSelection"] },
+  ],
 }
