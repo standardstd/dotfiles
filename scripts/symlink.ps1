@@ -3,11 +3,12 @@
 
 $ErrorActionPreference = "Stop"
 
-# Définition des chemins
+# --- Définition des chemins dynamiques ---
+# On récupère la racine du projet à partir de l'emplacement du script
 $SCRIPT_DIR = Split-Path -Parent -Path $MyInvocation.MyCommand.Definition
 $DOTFILES = Split-Path -Parent -Path $SCRIPT_DIR
 
-Write-Host "Installing dotfiles from: $DOTFILES" -ForegroundColor Green
+Write-Host "--- Installing dotfiles from: $DOTFILES ---" -ForegroundColor Green
 Write-Host ""
 
 # Check if running as Administrator
@@ -19,6 +20,7 @@ if (-not $isAdmin) {
     Write-Host ""
 }
 
+# --- Fonction de création sécurisée ---
 function Create-SymlinkSafely {
     param(
         [string]$Source,
@@ -39,6 +41,7 @@ function Create-SymlinkSafely {
     # Backup existing file if it exists and is not a symlink
     if (Test-Path $Target) {
         $item = Get-Item $Target -Force
+        # Vérifie si c'est déjà un lien (ReparsePoint)
         if ($item.Attributes -match "ReparsePoint" -or $item.LinkType -eq "SymbolicLink") {
             Write-Host "  Replacing existing symlink: $Target" -ForegroundColor Gray
             Remove-Item $Target -Force
@@ -53,7 +56,7 @@ function Create-SymlinkSafely {
     
     # Create symlink
     try {
-        # Utilisation de Out-Null pour éviter d'afficher 'True' dans la console
+        # Utilisation de New-Item pour créer le lien symbolique
         New-Item -ItemType SymbolicLink -Path $Target -Value $Source -Force -ErrorAction Stop | Out-Null
         Write-Host "[OK] Linked: $Target" -ForegroundColor Green
     }
@@ -63,25 +66,29 @@ function Create-SymlinkSafely {
     }
 }
 
-# --- Shell configurations ---
+# --- 1. Shell configurations ---
 Create-SymlinkSafely "$DOTFILES\shell\bashrc" "$env:USERPROFILE\.bashrc"
 Create-SymlinkSafely "$DOTFILES\shell\zshrc" "$env:USERPROFILE\.zshrc"
 
-# --- Git configuration ---
+# --- 2. PowerShell Profile ---
+# On lie le profil Windows vers le fichier dans ton repo dotfiles
+Create-SymlinkSafely "$DOTFILES\shell\Microsoft.PowerShell_profile.ps1" "$PROFILE"
+
+# --- 3. Git configuration ---
 Create-SymlinkSafely "$DOTFILES\git\gitconfig" "$env:USERPROFILE\.gitconfig"
 
-# --- Vim & IDE configurations ---
+# --- 4. Vim & IDE configurations ---
 Create-SymlinkSafely "$DOTFILES\vim\vimrc" "$env:USERPROFILE\.vimrc"
 Create-SymlinkSafely "$DOTFILES\vim\ideavimrc" "$env:USERPROFILE\.ideavimrc"
 
-# --- Tmux configuration ---
+# --- 5. Tmux configuration ---
 Create-SymlinkSafely "$DOTFILES\tmux\tmux.conf" "$env:USERPROFILE\.tmux.conf"
 
-# --- Neovim configuration ---
+# --- 6. Neovim configuration ---
 $nvimDir = "$env:USERPROFILE\AppData\Local\nvim"
 Create-SymlinkSafely "$DOTFILES\nvim\init.vim" "$nvimDir\init.vim"
 
-# --- VS Code configuration ---
+# --- 7. VS Code configuration ---
 $vscodeDir = "$env:APPDATA\Code\User"
 Create-SymlinkSafely "$DOTFILES\vscode\settings.json" "$vscodeDir\settings.json"
 Create-SymlinkSafely "$DOTFILES\vscode\keybindings.json" "$vscodeDir\keybindings.json"
