@@ -13,7 +13,9 @@ if ($item.Attributes -match "ReparsePoint" -or $item.LinkType) {
 $SHELL_DIR = Split-Path -Parent $currentFile
 $DOTFILES_PATH = Split-Path -Parent $SHELL_DIR
 
-$SH_PATH = "C:\Program Files\Git\bin\sh.exe"
+# Cherche sh.exe dans le PATH, sinon utilise le chemin par défaut
+$SH_PATH = Get-Command sh.exe -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Source
+if (-not $SH_PATH) { $SH_PATH = "C:\Program Files\Git\bin\sh.exe" }
 
 # --- Fonctions Dotfiles ---
 
@@ -39,6 +41,31 @@ function dot-code {
     if (Test-Path $DOTFILES_PATH) { 
         code $DOTFILES_PATH 
     }
+}
+# --- Configuration Neovim (Auto-détection portable) ---
+
+# 1. On cherche nvim.exe dans le PATH
+$nvimPath = Get-Command nvim -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Source
+
+# 2. Si non trouvé, on cherche dans les dossiers d'installation standards
+if (-not $nvimPath) {
+    $commonPaths = @(
+        "C:\Program Files\Neovim\bin\nvim.exe",
+        "$env:LOCALAPPDATA\nvim-win64\bin\nvim.exe",
+        "$env:LOCALAPPDATA\Microsoft\WinGet\Packages\neovim.neovim_Microsoft.Winget.Source_*\bin\nvim.exe"
+    )
+    foreach ($p in $commonPaths) {
+        $resolved = Resolve-Path $p -ErrorAction SilentlyContinue
+        if ($resolved) { $nvimPath = $resolved.Path; break }
+    }
+}
+
+# 3. On crée la fonction vi seulement si nvim est trouvé
+if ($nvimPath) {
+    function vi { & $nvimPath $args }
+} else {
+    # Optionnel: avertir que nvim manque pour inciter à lancer le bootstrap
+    # Write-Host "[!] Neovim non trouvé. Lancez bootstrap.ps1" -ForegroundColor Yellow
 }
 
 # --- Raccourcis classiques ---

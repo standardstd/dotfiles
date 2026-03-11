@@ -26,8 +26,9 @@ _load_private_config
 # Pyenv Configuration
 # ============================================
 export PYENV_ROOT="$HOME/.pyenv"
-[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
-if command -v pyenv &>/dev/null; then
+if [ -d "$PYENV_ROOT" ]; then
+    export PATH="$PYENV_ROOT/bin:$PATH"
+    eval "$(pyenv init --path)"
     eval "$(pyenv init -)"
 fi
 
@@ -46,6 +47,18 @@ alias la='ls -A'
 alias l='ls -CF'
 alias ..='cd ..'
 alias ...='cd ../..'
+alias tail-logs='tail -f *.log'
+
+# Utiliser Neovim s'il est présent, sinon Vim
+if command -v nvim &>/dev/null; then
+    alias vi='nvim'
+    alias vim='nvim'
+    export EDITOR='nvim'
+else
+    alias vi='vim'
+    export EDITOR='vim'
+fi
+
 
 # Dotfiles Management
 alias dot-up="bash $DOTFILES/scripts/update.sh"
@@ -72,8 +85,14 @@ mkcd() {
 #PS1='\u@\h:\w$ '
 # Fonction pour extraire la branche Git actuelle
 parse_git_branch() {
-     git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1)/'
+    git branch --show-current 2> /dev/null | sed 's/^/ (/' | sed 's/$/)/'
 }
+
+# Raccourci de copie vers le presse-papier selon l'OS
+if grep -q Microsoft /proc/version 2>/dev/null; then
+    # On est sous WSL (Windows Subsystem for Linux)
+    alias clip="clip.exe"
+fi
 
 # Configuration du prompt (PS1)
 # \u = utilisateur, \h = machine, \w = chemin complet, \W = dossier actuel seulement
