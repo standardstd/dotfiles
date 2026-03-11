@@ -65,12 +65,13 @@ alias dot-up="bash $DOTFILES/scripts/update.sh"
 alias dot-push="bash $DOTFILES/scripts/push.sh"
 
 # Git Aliases
-alias gs='git status'
-alias gc='git commit'
 alias ga='git add'
-alias gd='git diff'
+alias gc='git commit -m'
+alias gs='git status'
 alias gp='git push'
 alias gl='git log --oneline -10'
+alias gd='git diff'
+alias gco='git checkout'
 
 # ============================================
 # Functions

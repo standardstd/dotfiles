@@ -42,6 +42,17 @@ function dot-code {
         code $DOTFILES_PATH 
     }
 }
+
+# --- Alias Git (PowerShell) ---
+function ga { git add @args }
+function gc { git commit -m $args }
+function gs { git status }
+function gp { git push }
+function gl { git log --oneline -n 10 }
+function gd { git diff }
+function gco { git checkout @args }
+
+
 # --- Configuration Neovim (Auto-détection portable) ---
 
 # 1. On cherche nvim.exe dans le PATH
