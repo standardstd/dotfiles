@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+
+# On importe la détection de l'OS
+# Assure-toi que le chemin est correct par rapport à l'endroit où tu lances le script
+source ./scripts/os.sh
+
+OS=$(detect_os)
+
+echo "--- Installing base tools for: $OS ---"
+
+if [ "$OS" = "linux" ]; then
+    # Liste des paquets pour Debian/Ubuntu
+    PACKAGES=(git zsh tmux neovim curl ripgrep fd-find)
+    
+    echo "Updating apt..."
+    sudo apt update
+    echo "Installing: ${PACKAGES[*]}"
+    sudo apt install -y "${PACKAGES[@]}"
+
+elif [ "$OS" = "mac" ]; then
+    # Liste des paquets pour Homebrew
+    PACKAGES=(git zsh tmux neovim ripgrep fd)
+    
+    echo "Installing via Brew: ${PACKAGES[*]}"
+    brew install "${PACKAGES[@]}"
+
+elif [ "$OS" = "windows" ]; then
+    # Liste des ID Winget pour Windows
+    # Note: On utilise les ID complets pour éviter les ambiguïtés
+    PACKAGES=(Git.Git Neovim.Neovim Microsoft.VisualStudioCode)
+    
+    echo "Installing via Winget..."
+    for package in "${PACKAGES[@]}"; do
+        winget install --exact --id "$package" --silent
+    done
+fi
+
+echo "--- Tools installation complete ---"

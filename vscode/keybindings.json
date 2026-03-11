@@ -1,0 +1,13 @@
+// Keybindings globaux propres pour Vim uniquement
+[
+  {
+    "key": "space",
+    "command": "-workbench.action.toggleBreakpoint",
+    "when": "editorTextFocus",
+  },
+  {
+    "key": "space",
+    "command": "-breadcrumbs.revealFocused",
+    "when": "editorTextFocus",
+  },
+]

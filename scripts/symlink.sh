@@ -2,7 +2,7 @@
 
 DOTFILES="$HOME/dotfiles"
 
-echo "Installing dotfiles..."
+echo "Creating symlinks..."
 
 ln -sf "$DOTFILES/shell/zshrc" "$HOME/.zshrc"
 ln -sf "$DOTFILES/shell/bashrc" "$HOME/.bashrc"
@@ -17,4 +17,4 @@ ln -sf "$DOTFILES/tmux/tmux.conf" "$HOME/.tmux.conf"
 mkdir -p "$HOME/.config/nvim"
 ln -sf "$DOTFILES/nvim/init.vim" "$HOME/.config/nvim/init.vim"
 
-echo "Dotfiles installed."
+echo "Symlinks created."

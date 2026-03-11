@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+echo "Bootstrapping development environment..."
+
+./scripts/install-tools.sh
+./scripts/symlink.sh
+./scripts/install-vscode-extensions.sh
+
+echo "Environment ready."
