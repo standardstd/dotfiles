@@ -53,6 +53,32 @@ function gd { git diff }
 function gco { git checkout @args }
 
 
+# ============================================
+# Aliases & Functions (Style Bash)
+# ============================================
+
+# Navigation rapide
+function .. { cd .. }
+function ... { cd ../.. }
+function .... { cd ../../.. }
+
+# Listing (Utilise les paramètres natifs de Get-ChildItem)
+# Nota : 'ls' est déjà un alias vers Get-ChildItem sous Windows.
+function ll { Get-ChildItem -Force | Format-Table }
+function la { Get-ChildItem -Force }
+function l  { Get-ChildItem }
+
+# Surveillance des logs (Équivalent de tail -f)
+function tail-logs { 
+    Get-Content *.log -Wait -Tail 10 
+}
+
+# Bonus : Créer un dossier et y entrer (Très utile)
+function mkcd ($dir) {
+    New-Item -ItemType Directory -Path $dir
+    Set-Location $dir
+}
+
 # --- Configuration Neovim (Auto-détection portable) ---
 
 # 1. On cherche nvim.exe dans le PATH
@@ -79,9 +105,79 @@ if ($nvimPath) {
     # Write-Host "[!] Neovim non trouvé. Lancez bootstrap.ps1" -ForegroundColor Yellow
 }
 
-# --- Raccourcis classiques ---
-New-Alias -Name ll -Value ls -Force
-function .. { Set-Location .. }
+# ============================================
+# Aliases & Functions (Style Bash)
+# ============================================
+function .. { cd .. }
+function ... { cd ../.. }
+function .... { cd ../../.. }
+
+function check-stack { bash "$env:DOTFILES/scripts/check-stack.sh" }
+
+# Listing (Utilise les paramètres natifs de Get-ChildItem)
+function ll { Get-ChildItem -Force | Format-Table }
+function la { Get-ChildItem -Force }
+function l  { Get-ChildItem }
+
+# Surveillance des logs (Équivalent de tail -f)
+function tail-logs { Get-Content *.log -Wait -Tail 10 }
+
+# ============================================
+# Maven & Java (Ugram Project)
+# ============================================
+function mc { mvn clean compile }
+function mt { mvn clean test }
+function mp { mvn clean package -DskipTests }
+function ms { mvn spring-boot:run }
+
+# ============================================
+# Docker & Docker Compose
+# ============================================
+function dps { docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}" }
+function dstop { docker stop $(docker ps -q) }
+function dclean { docker system prune -a --volumes }
+
+# Vérifier la santé des containers Ugram (Healthcheck)
+function dch { 
+    docker ps --format "table {{.Names}}\t{{.Status}}" | Select-String "ugram|health"
+}
+
+# Alias pour inspecter pourquoi un container est "Unhealthy"
+function dci ($name) { docker inspect --format='{{json .State.Health}}' $name | ConvertFrom-Json }
+
+# Docker Compose (Simplifié en 'dc')
+function dcu { docker-compose up -d }                 # Up en arrière-plan
+function dcub { docker-compose up -d --build }        # Force le build avant de monter
+function dcd { docker-compose down }                  # Stop et retire les containers
+function dcdv { docker-compose down -v }              # Stop et SUPPRIME les volumes (Reset DB)
+function dcl { docker-compose logs -f }               # Tail des logs de tous les services
+function dcv { docker-compose up }                    # Mode verbeux standard
+function dcvv { docker-compose --verbose up }         # Mode ultra verbeux (Debug infra)
+
+# ============================================
+# System & Network
+# ============================================
+function myip { (Get-NetIPAddress -AddressFamily IPv4).IPAddress | Select-Object -First 2 }
+function oo { explorer . }
+function ps-find ($name) { Get-Process "*$name*" }
+function kill-port ($port) {
+    $id = (Get-NetTCPConnection -LocalPort $port -ErrorAction SilentlyContinue).OwningProcess
+    if ($id) { Stop-Process -Id $id -Force; echo "Port $port libéré (PID $id)" }
+    else { echo "Aucun processus sur le port $port" }
+}
+
+# ============================================
+# Git Aliases (PowerShell)
+# ============================================
+function ga { git add @args }
+function gc { git commit -m $args }
+function gs { git status }
+function gp { git push }
+function gl { git log --oneline -n 10 }
+function gd { git diff }
+function gco { git checkout @args }
+function gca { git commit --amend --no-edit }
+function gundo { git reset --soft HEAD~1 }
 
 Write-Host "[OK] Profil Dotfiles chargé (Path: $DOTFILES_PATH)" -ForegroundColor Cyan
 

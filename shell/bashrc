@@ -48,21 +48,7 @@ alias l='ls -CF'
 alias ..='cd ..'
 alias ...='cd ../..'
 alias tail-logs='tail -f *.log'
-
-# Utiliser Neovim s'il est présent, sinon Vim
-if command -v nvim &>/dev/null; then
-    alias vi='nvim'
-    alias vim='nvim'
-    export EDITOR='nvim'
-else
-    alias vi='vim'
-    export EDITOR='vim'
-fi
-
-
-# Dotfiles Management
-alias dot-up="bash $DOTFILES/scripts/update.sh"
-alias dot-push="bash $DOTFILES/scripts/push.sh"
+alias check-stack="bash $DOTFILES/scripts/check-stack.sh"
 
 # Git Aliases
 alias ga='git add'
@@ -72,12 +58,42 @@ alias gp='git push'
 alias gl='git log --oneline -10'
 alias gd='git diff'
 alias gco='git checkout'
+alias gca='git commit --amend --no-edit'
+alias gundo='git reset --soft HEAD~1'
+
+# Maven (Java)
+alias mc='mvn clean compile'
+alias mt='mvn clean test'
+alias mp='mvn clean package -DskipTests'
+alias ms='mvn spring-boot:run'
+
+# Docker Compose Aliases
+
+alias dcu='docker-compose up -d'
+alias dcub='docker-compose up -d --build'
+alias dcd='docker-compose down'
+alias dcdv='docker-compose down -v'
+alias dcl='docker-compose logs -f'
+alias dcv='docker-compose up'
+alias dcvv='docker-compose --verbose up'
+
+# Healthcheck rapide
+alias dch='docker ps --format "table {{.Names}}\t{{.Status}}" | grep -E "ugram|health"'
+
+# Inspection détaillée
+dci() {
+  docker inspect --format='{{json .State.Health}}' "$1"
+}
 
 # ============================================
 # Functions
 # ============================================
 mkcd() {
   mkdir -p "$@" && cd "$_"
+}
+
+kill-port() {
+  lsof -ti :"$1" | xargs kill -9
 }
 
 # ============================================
