@@ -16,21 +16,21 @@ if [ "$OS" = "linux" ]; then
     
     # --- Debian / Ubuntu (apt) ---
     if command -v apt-get &> /dev/null; then
-        PACKAGES=(git zsh tmux neovim curl ripgrep fd-find)
-        echo "Using apt-get to install packages..."
-        sudo apt update
-        sudo apt install -y "${PACKAGES[@]}"
+        # Ajout des dépendances de compilation pour Python (pyenv)
+        PYENV_DEPS=(make build-essential libssl-dev zlib1g-dev libbz2-dev \
+        libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev \
+        xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev)
         
-        # Correction pour fd-find (nom spécifique à Ubuntu)
+        PACKAGES=(git zsh tmux neovim curl ripgrep fd-find)
+        echo "Using apt-get to install packages and pyenv dependencies..."
+        sudo apt update
+        sudo apt install -y "${PACKAGES[@]}" "${PYENV_DEPS[@]}"
+        
+        # Correction pour fd-find
         mkdir -p "$HOME/.local/bin"
         if command -v fdfind &> /dev/null; then
             ln -sf "$(which fdfind)" "$HOME/.local/bin/fd"
-            echo "✓ Linked fdfind to $HOME/.local/bin/fd"
-            
-            # Alerte si .local/bin n'est pas dans le PATH
-            if [[ ":$PATH:" != *":$HOME/.local/bin:"* ]]; then
-                echo "⚠ Warning: Please add \$HOME/.local/bin to your PATH in your .zshrc/.bashrc"
-            fi
+            echo "[OK] Linked fdfind to $HOME/.local/bin/fd"
         fi
 
     # --- Fedora (dnf) ---
@@ -44,35 +44,25 @@ if [ "$OS" = "linux" ]; then
         PACKAGES=(git zsh tmux neovim curl ripgrep fd)
         echo "Using pacman to install packages..."
         sudo pacman -S --noconfirm "${PACKAGES[@]}"
+    fi
 
-    else
-        echo "⚠ Unknown package manager. Please install: git, zsh, tmux, neovim, curl, ripgrep, fd"
+    # Installation de pyenv
+    if [ ! -d "$HOME/.pyenv" ]; then
+        echo "Installing pyenv..."
+        curl https://pyenv.run | bash
     fi
 
 elif [ "$OS" = "mac" ]; then
     echo "Detected macOS"
-    
     if ! command -v brew &> /dev/null; then
-        echo "Installing Homebrew..."
         /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-        # Ajout au PATH immédiat pour la session actuelle (Apple Silicon)
-        if [[ -f /opt/homebrew/bin/brew ]]; then
-            eval "$(/opt/homebrew/bin/brew shellenv)"
-        fi
+        if [[ -f /opt/homebrew/bin/brew ]]; then eval "$(/opt/homebrew/bin/brew shellenv)"; fi
     fi
-    
-    PACKAGES=(git zsh tmux neovim ripgrep fd)
-    echo "Using Homebrew to install packages..."
+    PACKAGES=(git zsh tmux neovim ripgrep fd pyenv)
     brew install "${PACKAGES[@]}"
 
 elif [ "$OS" = "windows" ]; then
-    # Comme bootstrap.sh redirige déjà vers .ps1, ce bloc devient une sécurité
-    echo "Running Windows-specific setup via PowerShell..."
-    powershell.exe -ExecutionPolicy Bypass -File "$DOTFILES/bootstrap.ps1"
-    
-else
-    echo "ERROR: Unknown or unsupported OS: $OS"
-    exit 1
+    powershell.exe -ExecutionPolicy Bypass -File "$DOTFILES/scripts/install-tools.ps1"
 fi
 
 echo "--- Tools installation complete ---"
