@@ -1,6 +1,13 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# --- RECURSION GUARD ---
+# Empêche la boucle infinie si lancé depuis un terminal intégré VS Code
+if [[ "${TERM_PROGRAM:-}" == "vscode" ]]; then
+    echo ">>> Inside VS Code terminal: skipping extension install to prevent loop."
+    exit 0
+fi
+
 # Utilise $DOTFILES si défini, sinon calcule le parent
 DOTFILES="${DOTFILES:-$(dirname "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd )")}"
 
@@ -33,16 +40,19 @@ if [ -f "$EXT_FILE" ]; then
         # Nettoyage des caractères invisibles (cas où le fichier vient de Windows)
         extension=$(echo "$extension" | tr -d '\r' | xargs)
         
+        # Vérification supplémentaire après nettoyage
+        [[ -z "$extension" ]] && continue
+
         echo "Installing: $extension"
         # --force évite de redemander si déjà installé
         if code --install-extension "$extension" --force > /dev/null 2>&1; then
-            echo "  ✓ $extension"
+            echo "  [OK] $extension"
         else
-            echo "  ⚠ Failed: $extension"
+            echo "  [!] Failed: $extension"
         fi
     done < "$EXT_FILE"
     
-    echo "✓ Extensions installation complete."
+    echo "[OK] Extensions installation complete."
 else
     echo "ERROR: $EXT_FILE not found"
     exit 1
