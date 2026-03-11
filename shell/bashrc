@@ -69,4 +69,12 @@ mkcd() {
 # ============================================
 # Prompt
 # ============================================
-PS1='\u@\h:\w$ '
+#PS1='\u@\h:\w$ '
+# Fonction pour extraire la branche Git actuelle
+parse_git_branch() {
+     git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1)/'
+}
+
+# Configuration du prompt (PS1)
+# \u = utilisateur, \h = machine, \w = chemin complet, \W = dossier actuel seulement
+export PS1="\[\e[32m\]\u@\h\[\e[m\]:\[\e[34m\]\w\[\e[36m\]\$(parse_git_branch)\[\e[m\]\$ "
