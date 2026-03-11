@@ -1,33 +1,59 @@
 #!/usr/bin/env bash
-
 set -euo pipefail
 
-SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-DOTFILES="$(dirname "$SCRIPT_DIR")"
-
-if ! command -v code &> /dev/null; then
-    echo "WARNING: VS Code CLI (code) not found. Skipping extension installation."
-    echo "Make sure VS Code is installed and the 'code' command is available in PATH."
+# --- RECURSION GUARD ---
+# Empêche la boucle infinie si lancé depuis un terminal intégré VS Code
+if [[ "${TERM_PROGRAM:-}" == "vscode" ]]; then
+    echo ">>> Inside VS Code terminal: skipping extension install to prevent loop."
     exit 0
 fi
 
-echo "Installing VSCode extensions..."
+# Utilise $DOTFILES si défini, sinon calcule le parent
+DOTFILES="${DOTFILES:-$(dirname "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd )")}"
 
-if [ -f "$DOTFILES/vscode/extensions.txt" ]; then
-    while IFS= read -r extension; do
-        # Skip empty lines and comments
+# Vérification de la commande 'code'
+if ! command -v code &> /dev/null; then
+    echo "-------------------------------------------------------"
+    echo "WARNING: VS Code CLI (code) not found."
+    
+    # Aide spécifique pour macOS
+    if [[ "$(uname)" == "Darwin" ]]; then
+        echo "Tip: Open VS Code, press Cmd+Shift+P, and search for:"
+        echo "     'Shell Command: Install 'code' command in PATH'"
+    fi
+    
+    echo "Skipping extension installation for now."
+    echo "-------------------------------------------------------"
+    exit 0
+fi
+
+EXT_FILE="$DOTFILES/vscode/extensions.txt"
+
+if [ -f "$EXT_FILE" ]; then
+    echo "Installing VS Code extensions from: $EXT_FILE"
+    
+    # Lecture ligne par ligne
+    while IFS= read -r extension || [[ -n "$extension" ]]; do
+        # On ignore les lignes vides et les commentaires (#)
         [[ -z "$extension" || "$extension" =~ ^# ]] && continue
         
+        # Nettoyage des caractères invisibles (cas où le fichier vient de Windows)
+        extension=$(echo "$extension" | tr -d '\r' | xargs)
+        
+        # Vérification supplémentaire après nettoyage
+        [[ -z "$extension" ]] && continue
+
         echo "Installing: $extension"
-        if code --install-extension "$extension" --force; then
-            echo "✓ Installed $extension"
+        # --force évite de redemander si déjà installé
+        if code --install-extension "$extension" --force > /dev/null 2>&1; then
+            echo "  [OK] $extension"
         else
-            echo "⚠ Failed to install $extension"
+            echo "  [!] Failed: $extension"
         fi
-    done < "$DOTFILES/vscode/extensions.txt"
+    done < "$EXT_FILE"
     
-    echo "✓ Extensions installation complete."
+    echo "[OK] Extensions installation complete."
 else
-    echo "ERROR: $DOTFILES/vscode/extensions.txt not found"
+    echo "ERROR: $EXT_FILE not found"
     exit 1
 fi

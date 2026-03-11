@@ -1,13 +1,18 @@
 # ~/.bashrc - Bash configuration
 
+# ============================================
+# Environment Setup
+# ============================================
+export DOTFILES="$HOME/dotfiles"
+export EDITOR=vim
+export LANG=en_US.UTF-8
+
 # Load private configuration if it exists
-# Try multiple locations for dotfiles directory
 _load_private_config() {
     local private_paths=(
-        "$HOME/dotfiles/secrets/private.sh"
         "$DOTFILES/secrets/private.sh"
+        "$HOME/dotfiles/secrets/private.sh"
     )
-    
     for path in "${private_paths[@]}"; do
         if [ -f "$path" ]; then
             source "$path"
@@ -15,9 +20,16 @@ _load_private_config() {
         fi
     done
 }
-
-# Load private configuration
 _load_private_config
+
+# ============================================
+# Pyenv Configuration
+# ============================================
+export PYENV_ROOT="$HOME/.pyenv"
+[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
+if command -v pyenv &>/dev/null; then
+    eval "$(pyenv init -)"
+fi
 
 # ============================================
 # History Configuration
@@ -35,9 +47,11 @@ alias l='ls -CF'
 alias ..='cd ..'
 alias ...='cd ../..'
 
-# ============================================
+# Dotfiles Management
+alias dot-up="bash $DOTFILES/scripts/update.sh"
+alias dot-push="bash $DOTFILES/scripts/push.sh"
+
 # Git Aliases
-# ============================================
 alias gs='git status'
 alias gc='git commit'
 alias ga='git add'
@@ -46,14 +60,8 @@ alias gp='git push'
 alias gl='git log --oneline -10'
 
 # ============================================
-# Development Aliases
-# ============================================
-# Add your development tools aliases here
-
-# ============================================
 # Functions
 # ============================================
-# Example function to create and cd into a directory
 mkcd() {
   mkdir -p "$@" && cd "$_"
 }
@@ -61,11 +69,4 @@ mkcd() {
 # ============================================
 # Prompt
 # ============================================
-# Simple prompt - customize as needed
 PS1='\u@\h:\w$ '
-
-# ============================================
-# Exports
-# ============================================
-export EDITOR=vim
-export LANG=en_US.UTF-8

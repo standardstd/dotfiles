@@ -1,87 +1,48 @@
+### --- DOTFILES SPECIFIC (CRITICAL) ---
+# Dossier de secrets (À NE JAMAIS COMMITER)
+secrets/
+*.env
+*.pem
+*.key
+.netrc
+.zsh_history
+.bash_history
+.viminfo
+.lesshst
+
+# Backups automatiques générés par tes scripts symlink.sh/ps1
+*.backup.*
+*.bak
+*.old
+
 ### --- SYSTEM & ARCHIVES ---
 .DS_Store
-thumbs.db
+Thumbs.db
+Desktop.ini
 *.zip
 *.tar.gz
 *.rar
 
-### --- IDE (VS Code, IntelliJ) ---
-# VS Code
-.vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
-*.code-workspace
-
-# IntelliJ
+### --- IDE (VS Code & IntelliJ) ---
 .idea/
 *.iws
 *.iml
 *.ipr
 out/
-!**/src/main/resources/
-!**/src/test/resources/
+.vscode/
+!.vscode/extensions.json
+!.vscode/settings.json
+!.vscode/keybindings.json
 
-### --- JAVA & SPRING BOOT ---
-# Build
-target/
-build/
-.gradle/
-bin/
-*.class
-*.war
-*.ear
-*.jar
-
-# Logs & Config
-*.log
-.factorypath
-.project
-.settings/
-.classpath
-
-### --- NODE / TYPESCRIPT / REACT / ANGULAR ---
-node_modules/
-dist/
-tmp/
-.npm
-.eslintcache
-.stylelintcache
-*.tsbuildinfo
-
-# Angular specific
-.angular/
-
-# Test reports
-coverage/
-
-### --- PYTHON ---
-__pycache__/
-*.py[cod]
-*$py.class
-.venv
-venv/
-ENV/
-env/
-.env
-.pytest_cache/
-.mypy_cache/
-
-### --- DOCKER ---
-.docker/
-*/postgres_data/
-
-### --- TOOLS & UTILS ---
-.terraform/
-.vagrant/
-.next/
-.serverless/
-
-### --- BACKUP & TEMPORARY FILES ---
-*.bak
-*.backup
+### --- TEMP & OS TRASH ---
+.Trashes
+.Spotlight-V100
+.TemporaryItems
 *.swp
 *.swo
 *~
-.backup/
+
+### --- DOCKER & DB LOCAL (Ugram project leftovers) ---
+.docker/
+**/postgres_data/
+**/mysql_data/
