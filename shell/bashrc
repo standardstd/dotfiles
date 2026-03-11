@@ -34,6 +34,7 @@ alias la='ls -A'
 alias l='ls -CF'
 alias ..='cd ..'
 alias ...='cd ../..'
+alias dot-up="bash $HOME/dotfiles/scripts/update.sh"
 
 # ============================================
 # Git Aliases

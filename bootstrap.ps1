@@ -1,5 +1,5 @@
 # Bootstrap script for Windows PowerShell
-# Usage: powershell -ExecutionPolicy Bypass -File bootstrap.ps1
+# Usage: .\bootstrap.ps1
 
 $ErrorActionPreference = "Stop"
 
@@ -14,24 +14,26 @@ Write-Host ""
 $isAdmin = ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")
 
 if (-not $isAdmin) {
-    Write-Host "WARNING: Not running as Administrator" -ForegroundColor Yellow
-    Write-Host "Some operations (like symlinks) may fail without admin privileges." -ForegroundColor Yellow
-    Write-Host "Consider running: powershell -RunAs Administrator" -ForegroundColor Yellow
+    Write-Host "INFO: Running as Standard User." -ForegroundColor Cyan
+    Write-Host "Developer Mode will be used for symlinks." -ForegroundColor Cyan
     Write-Host ""
 }
 
 # Run installation scripts
 try {
+    # Étape 1 : Installation des outils
     Write-Host "--- Step 1: Installing tools ---" -ForegroundColor Cyan
-    & powershell -ExecutionPolicy Bypass -File "$DOTFILES\scripts\install-tools.ps1"
+    & "$DOTFILES\scripts\install-tools.ps1"
     Write-Host ""
     
+    # Étape 2 : Création des liens (Le "&" corrige ton erreur de privilèges)
     Write-Host "--- Step 2: Creating symlinks ---" -ForegroundColor Cyan
-    & powershell -ExecutionPolicy Bypass -File "$DOTFILES\scripts\symlink.ps1"
+    & "$DOTFILES\scripts\symlink.ps1"
     Write-Host ""
     
+    # Étape 3 : Extensions VS Code
     Write-Host "--- Step 3: Installing VS Code extensions ---" -ForegroundColor Cyan
-    & powershell -ExecutionPolicy Bypass -File "$DOTFILES\scripts\install-vscode-extensions.ps1"
+    & "$DOTFILES\scripts\install-vscode-extensions.ps1"
     Write-Host ""
     
     Write-Host "[OK] Setup complete!" -ForegroundColor Green
