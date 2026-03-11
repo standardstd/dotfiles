@@ -41,11 +41,6 @@ function dot-code {
     }
 }
 
-# --- Test ---
-function coucou { 
-    Write-Host "Le test fonctionne ! Les dotfiles sont ici : $DOTFILES_PATH" -ForegroundColor Magenta 
-}
-
 # --- Raccourcis classiques ---
 New-Alias -Name ll -Value ls -Force
 function .. { Set-Location .. }
