@@ -1,0 +1,75 @@
+# ~/.zshrc - Zsh configuration
+
+# Load private configuration if it exists
+# Try multiple locations for dotfiles directory
+_load_private_config() {
+    local private_paths=(
+        "$HOME/dotfiles/secrets/private.sh"
+        "$DOTFILES/secrets/private.sh"
+    )
+    
+    for path in "${private_paths[@]}"; do
+        if [ -f "$path" ]; then
+            source "$path"
+            return
+        fi
+    done
+}
+
+# Load private configuration
+_load_private_config
+
+# ============================================
+# History Configuration
+# ============================================
+HISTFILE=~/.zsh_history
+HISTSIZE=10000
+SAVEHIST=10000
+setopt SHARE_HISTORY
+setopt HIST_IGNORE_DUPS
+setopt HIST_FIND_NO_DUPS
+
+# ============================================
+# Completion
+# ============================================
+autoload -Uz compinit
+compinit
+
+# ============================================
+# Aliases
+# ============================================
+alias ll='ls -la'
+alias la='ls -A'
+alias l='ls -CF'
+alias ..='cd ..'
+alias ...='cd ../..'
+
+# ============================================
+# Git Aliases
+# ============================================
+alias gs='git status'
+alias gc='git commit'
+alias ga='git add'
+alias gd='git diff'
+alias gp='git push'
+alias gl='git log --oneline -10'
+
+# ============================================
+# Development Aliases
+# ============================================
+# Add your development tools aliases here
+
+# ============================================
+# Functions
+# ============================================
+# Example function to create and cd into a directory
+mkcd() {
+  mkdir -p "$@" && cd "$_"
+}
+
+# ============================================
+# Prompt
+# ============================================
+# Simple prompt - customize as needed
+setopt PROMPT_SUBST
+PROMPT='%n@%m:%~$ '

@@ -1,0 +1,111 @@
+" ==========================================================
+" IDEAVIM CONFIGURATION
+" IntelliJ / WebStorm / PyCharm
+" Leader : SPACE
+" ==========================================================
+
+" Load shared Vim configuration
+source ~/.vimrc
+
+" ----------------------------
+" IDEAVIM-SPECIFIC SETTINGS
+" ----------------------------
+
+set ideajoin
+set idearefactormode=keep
+set ideastatusicon=color
+
+set surround
+set commentary
+set highlightedyank
+set multiple-cursors
+
+" ----------------------------
+" FORMAT & IMPORTS
+" ----------------------------
+
+nnoremap <leader>f :action ReformatCode<CR>:action OptimizeImports<CR>
+
+vnoremap f :action ReformatCode<CR>
+
+nnoremap <leader>p p:action OptimizeImports<CR>
+
+autocmd BufWritePre * :action ReformatCode
+autocmd BufWritePre * :action OptimizeImports
+
+" ----------------------------
+" NAVIGATION CODE
+" ----------------------------
+
+nnoremap gd :action GotoDeclaration<CR>
+nnoremap gr :action ShowUsages<CR>
+nnoremap gi :action GotoImplementation<CR>
+nnoremap gy :action GotoTypeDeclaration<CR>
+
+nnoremap gb :action Back<CR>
+
+" ----------------------------
+" NAVIGATION STRUCTURE (Override with IdeaVim actions)
+" ----------------------------
+
+nnoremap ]m :action MethodDown<CR>
+nnoremap [m :action MethodUp<CR>
+
+nnoremap ]e :action GotoNextError<CR>
+nnoremap [e :action GotoPreviousError<CR>
+
+nnoremap ]c :action NextDiff<CR>
+nnoremap [c :action PrevDiff<CR>
+
+" ----------------------------
+" RECHERCHE
+" ----------------------------
+
+nnoremap <leader>s :action FindInPath<CR>
+nnoremap <leader>t :action GotoFile<CR>
+nnoremap <leader>o :action GotoSymbol<CR>
+
+nnoremap <leader>m :action FileStructurePopup<CR>
+
+" ----------------------------
+" REFACTOR
+" ----------------------------
+
+nnoremap <leader>rn :action RenameElement<CR>
+nnoremap <leader>a :action ShowIntentionActions<CR>
+
+" ----------------------------
+" FICHIERS
+" ----------------------------
+
+nnoremap <leader>q :action CloseActiveTab<CR>
+nnoremap <leader>r :action RecentFiles<CR>
+nnoremap <leader>e :action ReopenClosedTab<CR>
+
+nnoremap <leader><leader> :action RecentFiles<CR>
+
+nnoremap <leader>pe :action ActivateProjectToolWindow<CR>
+
+" ----------------------------
+" TERMINAL
+" ----------------------------
+
+nnoremap <leader>tt :action ActivateTerminalToolWindow<CR>
+
+" ----------------------------
+" SPLITS
+" ----------------------------
+
+nnoremap <leader>v :action SplitVertically<CR>
+nnoremap <leader>h :action SplitHorizontally<CR>
+
+" ----------------------------
+" HISTORIQUE
+" ----------------------------
+
+nnoremap <leader>hh :action LocalHistory.ShowHistory<CR>
+
+" ----------------------------
+" INSERT MODE
+" ----------------------------
+inoremap jj <Esc>

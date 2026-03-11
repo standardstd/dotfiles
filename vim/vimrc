@@ -1,0 +1,84 @@
+" ~/.vimrc - Vim configuration (shared with IdeaVim)
+
+" ============================================
+" Leader Key
+" ============================================
+let mapleader=" "
+
+" ============================================
+" Basic Settings
+" ============================================
+set nocompatible              " Use Vim defaults
+set number                    " Show line numbers
+set relativenumber            " Relative line numbers
+set ruler                     " Show cursor position
+set showcmd                   " Show commands being typed
+set clipboard=unnamedplus     " Use system clipboard
+
+" ============================================
+" Indentation & Tabs
+" ============================================
+set autoindent                " Auto indent
+set expandtab                 " Use spaces instead of tabs
+set tabstop=4                 " Tab size
+set softtabstop=4             " Soft tab size
+set shiftwidth=4              " Shift width
+
+" ============================================
+" Search
+" ============================================
+set incsearch                 " Incremental search
+set ignorecase                " Case insensitive search
+set smartcase                 " Smart case search
+set hlsearch                  " Highlight search results
+
+" ============================================
+" Display
+" ============================================
+set encoding=utf-8            " UTF-8 encoding
+set colorcolumn=80            " Show 80 character limit
+syntax on                     " Syntax highlighting
+
+" ============================================
+" Navigation Mappings
+" ============================================
+
+" Navigate splits with Ctrl+hjkl
+nnoremap <C-h> <C-w>h
+nnoremap <C-j> <C-w>j
+nnoremap <C-k> <C-w>k
+nnoremap <C-l> <C-w>l
+
+" Clear search highlighting with Ctrl+L
+" Note: May conflict with split nav above; Vim can handle it
+nnoremap <silent> <C-l> :nohlsearch<CR><C-l>
+
+" ============================================
+" Common Keyboard Remappings
+" ============================================
+
+" Format selection (Q for format)
+nnoremap Q gq
+
+" Quick save
+nnoremap <C-s> :w<CR>
+
+" ============================================
+" Method/Error Navigation (compatible with both Vim and IdeaVim)
+" ============================================
+
+" Navigate between errors (IdeaVim specific actions are in ideavimrc)
+nnoremap ]e :cnext<CR>
+nnoremap [e :cprevious<CR>
+
+" Navigate code motions
+nnoremap ]m ]]
+nnoremap [m [[
+
+" ============================================
+" Diff Navigation
+" ============================================
+
+nnoremap ]c ]c
+nnoremap [c [c
+

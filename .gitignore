@@ -77,3 +77,11 @@ env/
 .vagrant/
 .next/
 .serverless/
+
+### --- BACKUP & TEMPORARY FILES ---
+*.bak
+*.backup
+*.swp
+*.swo
+*~
+.backup/
