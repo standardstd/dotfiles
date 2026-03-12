@@ -8,9 +8,9 @@ if ($env:TERM_PROGRAM -eq "vscode") {
 }
 
 # --- Détection du chemin ---
-# On récupère le dossier parent de 'scripts/' pour trouver la racine des dotfiles
-$SCRIPT_DIR = Split-Path -Parent -Path $MyInvocation.MyCommand.Definition
-$DOTFILES = Split-Path -Parent -Path $SCRIPT_DIR
+# MyCommand.Definition donne le chemin complet du script (ex: C:\Users\Reagan\dotfiles\bootstrap.ps1)
+# Un seul Split-Path -Parent nous place dans le dossier 'dotfiles'
+$DOTFILES = Split-Path -Parent -Path $MyInvocation.MyCommand.Definition
 
 # On définit la variable d'environnement pour la session actuelle
 $env:DOTFILES = $DOTFILES
