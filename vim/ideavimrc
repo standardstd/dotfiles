@@ -66,6 +66,7 @@ nnoremap <leader>t :action GotoFile<CR>
 nnoremap <leader>o :action GotoSymbol<CR>
 
 nnoremap <leader>m :action FileStructurePopup<CR>
+nnoremap <Esc> :nohlsearch<CR>
 
 " ----------------------------
 " REFACTOR
