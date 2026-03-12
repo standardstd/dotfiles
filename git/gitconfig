@@ -4,7 +4,6 @@
 
 [core]
     editor = code --wait
-	autocrlf = true
     excludesfile = ~/.gitignore_global
 
 [init]
@@ -50,7 +49,7 @@
     cmd = code --wait $MERGED
 
 [core]
-    autocrlf = true
+	autocrlf = input
     safecrlf = false
 
 [help]

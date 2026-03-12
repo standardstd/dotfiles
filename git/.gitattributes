@@ -1,15 +1,26 @@
 # Forcer la détection automatique du texte
 * text=auto
 
-# Forcer les scripts shell en LF (Linux) même sur Windows
-*.sh text eol=lf
-.bashrc text eol=lf
+# Scripts Shell & Config Linux : TOUJOURS en format LF (Unix)
+# Indispensable pour éviter les erreurs ": command not found" dans WSL
+*.sh       text eol=lf
+.bashrc    text eol=lf
+.zshrc     text eol=lf
+.profile   text eol=lf
+gitconfig  text eol=lf
+*.vimrc    text eol=lf
+*.ideavimrc text eol=lf
 
-# Forcer le Markdown et les fichiers de config en LF pour éviter les erreurs GitHub
-*.md text eol=lf
-*.yml text eol=lf
-*.yaml text eol=lf
-.gitattributes text eol=lf
+# Scripts PowerShell : Conserver le format CRLF (Windows)
+*.ps1      text eol=crlf
+*.psm1     text eol=crlf
 
-# Laisser PowerShell décider (il gère bien le CRLF ou LF)
-*.ps1 text eol=auto
+# Fichiers de données et config standard
+*.json     text eol=lf
+*.txt      text eol=lf
+*.md       text eol=lf
+
+# Ignorer les fichiers binaires
+*.png      binary
+*.jpg      binary
+*.jar      binary
