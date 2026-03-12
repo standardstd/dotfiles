@@ -16,7 +16,7 @@ else
     echo -e "${RED}MANQUANT${NC}"
 fi
 
-echo -n "🏗️  Maven: "
+echo -n "🏗️ Maven: "
 if command -v mvn >/dev/null; then
     echo -e "${GREEN}Installé${NC}"
 else
@@ -34,14 +34,15 @@ fi
 # 3. Check Containers & Health
 echo -e "\n${BLUE}📋 État des services Docker:${NC}"
 if docker ps -a | grep -q "ugram"; then
-    docker ps --format "table {{.Names}}\t{{.Status}}" | grep "ugram"
+    # On affiche l'entête puis les lignes correspondantes
+    docker ps --format "table {{.Names}}\t{{.Status}}" | grep -E "Names|ugram"
 else
     echo -e "${RED}Aucun container 'ugram' trouvé. Lancez 'dcub'.${NC}"
 fi
 
 # 4. Check Database Port (PostgreSQL default)
 echo -ne "\n🐘 Port PostgreSQL (5432): "
-if nc -z localhost 5432 2>/dev/null; then
+if timeout 1 bash -c 'cat < /dev/tcp/localhost/5432' >/dev/null 2>&1; then
     echo -e "${GREEN}OUVERT (Prêt)${NC}"
 else
     echo -e "${RED}FERMÉ (Vérifiez le container DB)${NC}"
