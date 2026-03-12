@@ -49,6 +49,8 @@ alias ..='cd ..'
 alias ...='cd ../..'
 alias tail-logs='tail -f *.log'
 alias check-stack="bash $DOTFILES/scripts/check-stack.sh"
+# Convertit un fichier Windows en format Linux (UTF-8 + LF)
+alias fix-script="sed -i 's/\r$//'"
 
 # Git Aliases
 alias ga='git add'

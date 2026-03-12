@@ -130,4 +130,5 @@
   "vim.visualModeKeyBindingsNonRecursive": [
     { "before": ["f"], "commands": ["editor.action.formatSelection"] },
   ],
+  "files.eol": "\n",
 }

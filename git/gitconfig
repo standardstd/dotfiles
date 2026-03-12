@@ -49,6 +49,10 @@
 [mergetool "vscode"]
     cmd = code --wait $MERGED
 
+[core]
+    autocrlf = true
+    safecrlf = false
+
 [help]
     # Corrige automatiquement les fautes de frappe (ex: 'git stats' devient 'status')
     autocorrect = 1

@@ -1,0 +1,15 @@
+# Forcer la détection automatique du texte
+* text=auto
+
+# Forcer les scripts shell en LF (Linux) même sur Windows
+*.sh text eol=lf
+.bashrc text eol=lf
+
+# Forcer le Markdown et les fichiers de config en LF pour éviter les erreurs GitHub
+*.md text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+.gitattributes text eol=lf
+
+# Laisser PowerShell décider (il gère bien le CRLF ou LF)
+*.ps1 text eol=auto

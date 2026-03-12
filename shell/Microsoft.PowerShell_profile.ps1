@@ -1,3 +1,6 @@
+# Forcer l'encodage UTF-8 par défaut pour les sorties de fichiers
+$PSDefaultParameterValues['Out-File:Encoding'] = 'utf8'
+
 # --- Détection dynamique et robuste du chemin ---
 
 # 1. On récupère le chemin du script actuel
