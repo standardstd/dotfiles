@@ -115,7 +115,10 @@ function .. { cd .. }
 function ... { cd ../.. }
 function .... { cd ../../.. }
 
-function check-stack { bash "$env:DOTFILES/scripts/check-stack.sh" }
+function check-stack {
+    # On force l'exécution du script via WSL, peu importe où on est
+    wsl bash -c "~/dotfiles/scripts/check-stack.sh"
+}
 
 # Listing (Utilise les paramètres natifs de Get-ChildItem)
 function ll { Get-ChildItem -Force | Format-Table }
