@@ -1,55 +1,65 @@
 # install-vscode-extensions.ps1 - Install VS Code extensions on Windows
-# Usage: powershell -ExecutionPolicy Bypass -File scripts\install-vscode-extensions.ps1
-
 $ErrorActionPreference = "Stop"
 
 # --- RECURSION GUARD ---
-# Si le script détecte qu'il est exécuté DEPUIS un terminal VS Code, il s'arrête immédiatement.
 if ($env:TERM_PROGRAM -eq "vscode") {
     Write-Host ">>> Already inside VS Code terminal. Skipping installation to prevent infinite loop." -ForegroundColor Cyan
     exit 0
 }
 
-$SCRIPT_DIR = Split-Path -Parent -Path $MyInvocation.MyCommand.Definition
-$DOTFILES = Split-Path -Parent -Path $SCRIPT_DIR
+# --- Détection du chemin ---
+$DOTFILES = $env:DOTFILES
+if (-not $DOTFILES) {
+    # Si la variable d'environnement manque, on calcule : script est dans scripts/, donc parent du parent
+    $DOTFILES = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Definition)
+}
 
-# Check if code command is available
+# Vérifier si VS Code est accessible
 if (-not (Get-Command code -ErrorAction SilentlyContinue)) {
     Write-Host "WARNING: VS Code CLI (code) not found. Skipping extension installation." -ForegroundColor Yellow
     exit 0
 }
 
-Write-Host "Installing VS Code extensions..." -ForegroundColor Green
-
 $extensionsFile = "$DOTFILES\vscode\extensions.txt"
 
 if (-not (Test-Path $extensionsFile)) {
-    Write-Host "ERROR: $extensionsFile not found" -ForegroundColor Red
+    Write-Host "ERROR: $extensionsFile not found at $extensionsFile" -ForegroundColor Red
     exit 1
 }
 
-$extensions = @(Get-Content $extensionsFile | Where-Object { $_ -and -not $_.StartsWith("#") })
+# Lecture et nettoyage de la liste des extensions
+$extensions = Get-Content $extensionsFile | Where-Object { $_.Trim() -and -not $_.StartsWith("#") }
 
-if ($extensions.Count -eq 0) {
-    Write-Host "No extensions to install." -ForegroundColor Yellow
+if ($null -eq $extensions -or $extensions.Count -eq 0) {
+    Write-Host "No extensions found in extensions.txt." -ForegroundColor Yellow
     exit 0
 }
 
+# Récupérer la liste des extensions déjà installées
+Write-Host "Fetching list of already installed extensions..." -ForegroundColor Gray
+$installedExtensions = code --list-extensions
+
+Write-Host "Installing VS Code extensions..." -ForegroundColor Green
+
 $failedCount = 0
 $successCount = 0
+$skippedCount = 0
 
 foreach ($extension in $extensions) {
     $extension = $extension.Trim()
     
-    if (-not $extension -or $extension.StartsWith("#")) {
+    # Comparaison insensible à la casse pour plus de fiabilité
+    if ($installedExtensions -match "^$([Regex]::Escape($extension))$") {
+        Write-Host "[SKIP] $extension is already installed" -ForegroundColor Gray
+        $skippedCount++
         continue
     }
     
-    Write-Host "Installing: $extension" -ForegroundColor Yellow
+    Write-Host "Installing: $extension..." -ForegroundColor Yellow
     
     try {
-        # L'ajout de --force est crucial pour éviter les prompts bloquants
-        $output = code --install-extension $extension --force 2>&1
+        # --force est utilisé pour garantir l'installation/mise à jour sans prompt
+        $null = code --install-extension $extension --force
         Write-Host "[OK] Installed $extension" -ForegroundColor Green
         $successCount++
     }
@@ -60,5 +70,7 @@ foreach ($extension in $extensions) {
 }
 
 Write-Host ""
-Write-Host "[OK] Extensions installation complete." -ForegroundColor Green
-Write-Host "  Installed: $successCount | Failed: $failedCount" -ForegroundColor Cyan
+Write-Host "--- Summary ---" -ForegroundColor Green
+Write-Host "  Success: $successCount" -ForegroundColor Green
+Write-Host "  Skipped: $skippedCount (Already present)" -ForegroundColor Gray
+Write-Host "  Failed:  $failedCount" -ForegroundColor Red

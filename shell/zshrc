@@ -9,16 +9,10 @@ export LANG=en_US.UTF-8
 
 # Load private configuration if it exists
 _load_private_config() {
-    local private_paths=(
-        "$DOTFILES/secrets/private.sh"
-        "$HOME/dotfiles/secrets/private.sh"
-    )
-    for path in "${private_paths[@]}"; do
-        if [ -f "$path" ]; then
-            source "$path"
-            return
-        fi
-    done
+    local private_script="$HOME/dotfiles/secrets/private.sh"
+    if [[ -f "$private_script" ]]; then
+        source "$private_script"
+    fi
 }
 _load_private_config
 
@@ -26,8 +20,8 @@ _load_private_config
 # Pyenv Configuration
 # ============================================
 export PYENV_ROOT="$HOME/.pyenv"
-[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
-if command -v pyenv &>/dev/null; then
+if [[ -d $PYENV_ROOT/bin ]]; then
+    export PATH="$PYENV_ROOT/bin:$PATH"
     eval "$(pyenv init -)"
 fi
 
@@ -37,18 +31,20 @@ fi
 HISTFILE=~/.zsh_history
 HISTSIZE=10000
 SAVEHIST=10000
-setopt SHARE_HISTORY
-setopt HIST_IGNORE_DUPS
-setopt HIST_FIND_NO_DUPS
+setopt SHARE_HISTORY          # Partage l'historique entre les sessions ouvertes
+setopt HIST_IGNORE_DUPS       # Ne pas enregistrer les doublons consécutifs
+setopt HIST_FIND_NO_DUPS      # Ne pas afficher les doublons lors de la recherche
+setopt HIST_IGNORE_SPACE      # Ne pas enregistrer les commandes commençant par un espace
 
 # ============================================
-# Completion
+# Completion & Syntax
 # ============================================
 autoload -Uz compinit
 compinit
+zstyle ':completion:*' menu select # Menu de sélection visuel pour la complétion
 
 # ============================================
-# Aliases
+# Aliases (Sync with bashrc)
 # ============================================
 alias ll='ls -la'
 alias la='ls -A'
@@ -59,14 +55,28 @@ alias ...='cd ../..'
 # Dotfiles Management
 alias dot-up="bash $DOTFILES/scripts/update.sh"
 alias dot-push="bash $DOTFILES/scripts/push.sh"
+alias check-stack="bash $DOTFILES/scripts/check-stack.sh"
 
 # Git Aliases
 alias gs='git status'
-alias gc='git commit'
+alias gc='git commit -m'
 alias ga='git add'
 alias gd='git diff'
 alias gp='git push'
 alias gl='git log --oneline -10'
+alias gco='git checkout'
+
+# Maven (Ugram)
+alias mc='mvn clean compile'
+alias mt='mvn clean test'
+alias mp='mvn clean package -DskipTests'
+alias ms='mvn spring-boot:run'
+
+# Docker
+alias dcu='docker-compose up -d'
+alias dcub='docker-compose up -d --build'
+alias dcd='docker-compose down'
+alias dcl='docker-compose logs -f'
 
 # ============================================
 # Functions
@@ -76,7 +86,12 @@ mkcd() {
 }
 
 # ============================================
-# Prompt
+# Prompt (Minimalist & Git aware)
 # ============================================
+autoload -Uz vcs_info
+precmd() { vcs_info }
+zstyle ':vcs_info:git:*' formats '(%b)'
+
 setopt PROMPT_SUBST
-PROMPT='%n@%m:%~$ '
+# Prompt: user@host:path (branch)$
+PROMPT='%F{green}%n@%m%f:%F{blue}%~%f%F{cyan}${vcs_info_msg_0_}%f$ '

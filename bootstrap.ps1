@@ -1,18 +1,19 @@
 # bootstrap.ps1 - Bootstrap script for Windows PowerShell
-# Usage: .\bootstrap.ps1
-
 $ErrorActionPreference = "Stop"
 
 # --- RECURSION GUARD ---
-# Protection critique : empêche VS Code de se relancer en boucle
 if ($env:TERM_PROGRAM -eq "vscode") {
     Write-Host ">>> Already inside VS Code terminal. Skipping bootstrap to prevent infinite loop." -ForegroundColor Cyan
     exit 0
 }
 
-# Get script directory
+# --- Détection du chemin ---
+# On récupère le dossier parent de 'scripts/' pour trouver la racine des dotfiles
 $SCRIPT_DIR = Split-Path -Parent -Path $MyInvocation.MyCommand.Definition
-$DOTFILES = $SCRIPT_DIR
+$DOTFILES = Split-Path -Parent -Path $SCRIPT_DIR
+
+# On définit la variable d'environnement pour la session actuelle
+$env:DOTFILES = $DOTFILES
 
 Write-Host "--- Bootstrapping dev environment from: $DOTFILES ---" -ForegroundColor Green
 Write-Host ""
@@ -22,29 +23,32 @@ $isAdmin = ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIde
 
 if (-not $isAdmin) {
     Write-Host "INFO: Running as Standard User." -ForegroundColor Cyan
-    Write-Host "Developer Mode (if enabled) will be used for symlinks." -ForegroundColor Cyan
+    Write-Host "Note: Symlinks require 'Developer Mode' to be ON if not Admin." -ForegroundColor Cyan
     Write-Host ""
 }
 
 # Run installation scripts
 try {
-    # Étape 1 : Installation des outils (inclut maintenant pyenv-win)
+    # Étape 1 : Installation des outils de base (winget)
     Write-Host "--- Step 1: Installing tools ---" -ForegroundColor Cyan
     & "$DOTFILES\scripts\install-tools.ps1"
     Write-Host ""
     
-    # Étape 2 : Création des liens symboliques
+    # Étape 2 : Création des liens symboliques (Profils, Git, VS Code)
     Write-Host "--- Step 2: Creating symlinks ---" -ForegroundColor Cyan
     & "$DOTFILES\scripts\symlink.ps1"
     Write-Host ""
     
-    # Étape 3 : Extensions VS Code (avec garde-fou interne)
+    # Étape 3 : Extensions VS Code
     Write-Host "--- Step 3: Installing VS Code extensions ---" -ForegroundColor Cyan
     & "$DOTFILES\scripts\install-vscode-extensions.ps1"
     Write-Host ""
     
-    Write-Host "[OK] Setup complete!" -ForegroundColor Green
-    Write-Host "Please restart your terminal (PowerShell or Git Bash) to apply all changes." -ForegroundColor Yellow
+    Write-Host "===========================================" -ForegroundColor Green
+    Write-Host "[OK] Global Setup Complete!" -ForegroundColor Green
+    Write-Host "===========================================" -ForegroundColor Green
+    Write-Host "IMPORTANT: Restart PowerShell 7 or VS Code to apply all changes." -ForegroundColor Yellow
+    Write-Host "Try typing 'gs' or 'check-stack' after restart." -ForegroundColor Gray
 }
 catch {
     Write-Host "[!] Error during setup:" -ForegroundColor Red
