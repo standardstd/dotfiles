@@ -1,3 +1,7 @@
+# Rafraîchir la liste des extensions VS Code avant le push
+Write-Host "Mise à jour de la liste des extensions VS Code..." -ForegroundColor Cyan
+code --list-extensions > "$PSScriptRoot\..\vscode\extensions.txt"
+
 # push.ps1 - Sync dotfiles to GitHub
 $ErrorActionPreference = "Stop"
 
