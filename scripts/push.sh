@@ -1,3 +1,7 @@
+# Mettre à jour la liste des extensions VS Code avant le commit
+echo "Syncing VS Code extensions list..."
+code --list-extensions > "$(dirname "$0")/../vscode/extensions.txt"
+
 #!/usr/bin/env bash
 set -euo pipefail
 
