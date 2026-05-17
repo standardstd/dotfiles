@@ -55,3 +55,7 @@
 [help]
     # Corrige automatiquement les fautes de frappe (ex: 'git stats' devient 'status')
     autocorrect = 1
+[fetch]
+	prune = true
+[credential "https://projets.fsg.ulaval.ca"]
+	provider = generic

@@ -33,7 +33,6 @@
     "scminput": false,
   },
   "diffEditor.ignoreTrimWhitespace": false,
-  "chat.viewSessions.orientation": "stacked",
 
   "vim.leader": " ",
   "vim.useSystemClipboard": true,
@@ -131,4 +130,7 @@
     { "before": ["f"], "commands": ["editor.action.formatSelection"] },
   ],
   "files.eol": "\n",
+  "terminal.integrated.gpuAcceleration": "off",
+  "git.ignoreRebaseWarning": true,
+  "chat.viewSessions.orientation": "stacked",
 }
