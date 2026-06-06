@@ -1,0 +1,76 @@
+===============================================================================
+     GUIDE DE RECONNEXION AU CLUSTER AWS EC2 (PROXYJUMP)
+===============================================================================
+
+Ce guide résume la procédure pour relancer et se connecter au cluster de 
+3 instances (Node 1, Node 2, Node 3) après un arrêt, tout en protégeant 
+le Free Tier AWS.
+
+-------------------------------------------------------------------------------
+ÉTAPE 1 : METTRE À JOUR L'IP SUR LA CONSOLE AWS
+-------------------------------------------------------------------------------
+À chaque redémarrage des instances, votre adresse IP publique personnelle 
+ou celle de Node 1 peut changer.
+
+1. Connectez-vous à la console AWS EC2.
+2. Autoriser votre ordinateur actuel :
+   - Allez dans le Security Group du cluster (launch-wizard-1).
+   - Cliquez sur "Edit inbound rules".
+   - Sur la ligne SSH réservée à votre IP, modifiez la source à "My IP" 
+     (pour détecter votre IP actuelle) ou passez en "0.0.0.0/0".
+   - Enregistrez les modifications.
+3. Récupérer la nouvelle IP de Node 1 :
+   - Allez sur l'instance "node1" et copiez son "Adresse IPv4 publique".
+
+-------------------------------------------------------------------------------
+ÉTAPE 2 : METTRE À JOUR LE FICHIER DE CONFIGURATION SSH LOCAL
+-------------------------------------------------------------------------------
+Ouvrez le fichier "~/.ssh/config" sur votre machine locale et collez-y 
+la configuration suivante (remplacez l'adresse de Node 1 par la nouvelle 
+IP copiée à l'étape précédente) :
+
+Host node1
+    HostName 34.229.168.223  <-- METTRE À JOUR CETTE IP À CHAQUE REDÉMARRAGE
+    User ubuntu
+    IdentityFile ~/forMyAwsCluster.pem
+    ForwardAgent yes
+
+Host node2
+    HostName 172.31.18.39 
+    User ubuntu
+    IdentityFile ~/forMyAwsCluster.pem
+    ProxyJump node1
+
+Host node3
+    HostName 172.31.22.48
+    User ubuntu
+    IdentityFile ~/forMyAwsCluster.pem
+    ProxyJump node1
+
+* Note : Pour coller proprement sans inclure de caractères Windows cachés (^M),
+  utilisez toujours le raccourci : Ctrl + Shift + V.
+
+-------------------------------------------------------------------------------
+ÉTAPE 3 : ACTIVER L'AGENT SSH (À faire à chaque ouverture de terminal)
+-------------------------------------------------------------------------------
+Pour que le rebond (ProxyJump) fonctionne vers Node 2 et Node 3 sans copier 
+le fichier .pem sur les serveurs, vous devez charger la clé dans la mémoire 
+de votre terminal local. Tapez ces deux commandes :
+
+1. Démarrer l'agent SSH en arrière-plan :
+   eval `ssh-agent -s`
+
+2. Ajouter votre clé privée à l'agent :
+   ssh-add ~/forMyAwsCluster.pem
+
+-------------------------------------------------------------------------------
+ÉTAPE 4 : CONNEXION INSTANTANÉE
+-------------------------------------------------------------------------------
+Vous pouvez maintenant vous connecter directement à n'importe quel node 
+avec les commandes simplifiées :
+
+   ssh node1
+   ssh node2
+   ssh node3
+
+===============================================================================

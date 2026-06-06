@@ -133,4 +133,7 @@
   "terminal.integrated.gpuAcceleration": "off",
   "git.ignoreRebaseWarning": true,
   "chat.viewSessions.orientation": "stacked",
+  "[java]": {
+    "editor.defaultFormatter": "redhat.java",
+  },
 }
