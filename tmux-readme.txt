@@ -69,3 +69,31 @@ sur Terminator, exécutez cette commande unique dans votre WSL :
     echo "set -g mouse on" >> ~/.tmux.conf && tmux source-file ~/.tmux.conf
 
 ========================================================================
+
+
+------------------------------------------------------------------------
+7. PAR EXTRA : RENOMMER LES VOLETS DUPLIQUÉS (PANE TITLES)
+------------------------------------------------------------------------
+Par défaut, Tmux ne montre pas le titre des fenêtres découpées. Pour 
+afficher et modifier le nom de chaque terminal dupliqué :
+
+Étape A : Activer l'affichage des titres (Bordure haute)
+    Lancez cette commande une fois dans votre Tmux :
+    tmux set -g pane-border-status top
+
+Étape B : Renommer le volet actuel via l'interface interne
+    1. Faites le préfixe : [Ctrl] + [b]
+    2. Appuyez sur la touche : [:]  (deux-points)
+    3. Dans la barre apparue en bas, tapez textuellement :
+       select-pane -T "Votre Titre"
+    4. Appuyez sur [Entrée]
+
+Étape C : Raccourci magique (Recommandé)
+    Pour pouvoir renommer à la volée vos duplications avec un raccourci,
+    exécutez cette commande une bonne fois pour toutes dans votre WSL :
+
+    echo 'bind-key T command-prompt -p "Nom du volet:" "select-pane -T %%"' >> ~/.tmux.conf && tmux source-file ~/.tmux.conf
+
+    Désormais, pour renommer n'importe quelle zone, il vous suffira de faire :
+    [Ctrl] + [b] puis [Maj] + [t]
+------------------------------------------------------------------------
