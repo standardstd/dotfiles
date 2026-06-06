@@ -33,3 +33,4 @@ parse_git_branch() {
 }
 export PS1="\[\e[32m\]\u@\h\[\e[m\]:\[\e[34m\]\w\[\e[36m\]\$(parse_git_branch)\[\e[m\]\$ "
 export LANG=en_US.UTF-8
+alias terminator="GDK_BACKEND=x11 terminator -l mon-layout"
